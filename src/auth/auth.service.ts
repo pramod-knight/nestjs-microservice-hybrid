@@ -2,6 +2,7 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { JwtService } from '@nestjs/jwt';
 import { LoginAuthDto } from './dto/login.dto';
+import { all } from 'axios';
 
 @Injectable()
 export class AuthService {
@@ -39,7 +40,17 @@ export class AuthService {
   
     if(!data){
       throw new BadRequestException("User not found");
-    }
+    };
+
+    /** here we add time */
+    // var allowTime = new Date(); 
+    // allowTime.setHours(9,0,0,0);
+
+    // let getSystemTime = new Date();
+
+    // if(getSystemTime > allowTime){
+    //   throw new BadRequestException(`You can login between 9:am to 6 PM  system time : ${getSystemTime} and allow time : ${allowTime}`)
+    // }
     const userJson =data;
 
     [

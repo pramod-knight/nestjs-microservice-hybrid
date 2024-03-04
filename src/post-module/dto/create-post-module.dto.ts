@@ -11,8 +11,7 @@ import {
 export class CreatePostModuleDto {
   @IsNotEmpty()
   @IsArray()
-  @ArrayNotEmpty()
-  @ArrayMinSize(1)
+  @ArrayMinSize(0)
   post_images: string[];
 
   @IsNotEmpty()

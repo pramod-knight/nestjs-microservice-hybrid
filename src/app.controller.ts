@@ -5,15 +5,13 @@ import {
   Get,
   Inject,
   Param,
-  Patch,
   Post,
   Put,
-  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import { AppService } from './app.service';
-import { ClientProxy, Payload } from '@nestjs/microservices';
+import { ClientProxy } from '@nestjs/microservices';
 import { UpdateUserDto } from './users/dto/update-user.dto';
 
 import { LoginAuthDto } from './auth/dto/login.dto';
@@ -28,6 +26,7 @@ import { Roles } from './auth/role.decorator';
 import { ApiHeader } from '@nestjs/swagger';
 import { ListUserDto } from './users/dto/user-list.dto';
 import { FollowUserDto } from './users/dto/follower-user.dto';
+import { LikePostDto } from './post-module/dto/like-post.dto';
 
 @Controller()
 export class AppController {
@@ -122,6 +121,55 @@ export class AppController {
     const pattern = 'login';
     return this.authClient.send(pattern, payload);
   }
-  
+
+  /////////////////  POST GATEWAY  //////////////////////
+  @Roles(['admin'])
+  @UseGuards(JwtAuthGuard,AuthenticationGuard)
+  @Post('post/create')
+  createPost(@Body() payload: CreatePostModuleDto,@Req() req:any) {
+    const pattern = 'createPostModule';
+    payload.created_by =req.user.id
+    return this.postClient.send(pattern, payload);
+  }
+
+  @Roles(['admin'])
+  @UseGuards(JwtAuthGuard,AuthenticationGuard)
+  @Post('post/list')
+  getAllPost(@Body() payload: ListPostModuleDto) {
+    const pattern = 'findAllPostModule';
+    return this.postClient.send(pattern, payload);
+  }
+
+  @Roles(['admin'])
+  @UseGuards(JwtAuthGuard,AuthenticationGuard)
+  @Get('post/details/:slug')
+  getPostDetails(@Param() slug: string) {
+    const pattern = 'findPostBySlug';
+    return this.postClient.send(pattern, slug);
+  }
+
+  @Roles(['admin'])
+  @UseGuards(JwtAuthGuard,AuthenticationGuard)
+  @Delete('post/remove/:slug')
+  removePost(@Param() slug: string) {
+    const pattern = 'removeBySlug';
+    return this.postClient.send(pattern, slug);
+  }
+
+  @Roles(['admin','user'])
+  @UseGuards(JwtAuthGuard,AuthenticationGuard)
+  @Post('post/like')
+  likePost(@Body() payload: LikePostDto) {
+    const pattern = 'likePost';
+    return this.postClient.send(pattern, payload);
+  }
+
+  @Roles(['admin','user'])
+  @UseGuards(JwtAuthGuard,AuthenticationGuard)
+  @Post('post/unlike')
+  unlikePost(@Body() payload: LikePostDto) {
+    const pattern = 'unlikePost';
+    return this.postClient.send(pattern, payload);
+  }
 }
 

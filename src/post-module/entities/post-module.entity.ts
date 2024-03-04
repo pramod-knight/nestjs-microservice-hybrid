@@ -7,8 +7,6 @@ export type ProductServiceDocument = HydratedDocument<Post>;
   autoIndex: true,
 })
 export class Post {
-  @Prop()
-  tags: string[];
 
   @Prop()
   description: string;
